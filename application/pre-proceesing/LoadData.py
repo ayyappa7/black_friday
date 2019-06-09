@@ -1,4 +1,4 @@
-import csv, time
+import csv, time, sys
 import numpy as np
 
 prodIdN = 'Product_ID'
@@ -50,7 +50,7 @@ def dataPreProcessing():
         for row in data:
             dictData = dict(row)
 
-            # Scaling productId
+            # populating productID map
             if dictData["Product_ID"] not in productIdMap.keys():
                 newID = dictData["Product_ID"]
                 productIdMap[newID] = lastID
@@ -61,14 +61,14 @@ def dataPreProcessing():
             output = np.append(output, y)
             i += 1
             if i % 1000 == 0:
-                print("Progress {:2.1%}".format(i / 550068), )
+                sys.stdout.write('\r' + "Progress {:2.1%}".format(i / 550068))
 
     return scaledVector, output
 
 
 if __name__ == '__main__':
     scaledVector, output = dataPreProcessing()
-    scaledVector.dump("../../application/data/train.npy")
-    output.dump("../../application/data/trainOutput.npy")
-    scaledVector2 = np.load("../../application/data/train.npy", allow_pickle=True)
+    scaledVector.dump("../../application/data/train2.npy")
+    output.dump("../../application/data/trainOutput2.npy")
+    scaledVector2 = np.load("../../application/data/train2.npy", allow_pickle=True)
     print(scaledVector2.shape)
