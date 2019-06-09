@@ -62,7 +62,6 @@ def dataPreProcessing():
             i += 1
             if i % 1000 == 0:
                 print("Progress {:2.1%}".format(i / 550068), )
-                return scaledVector, output
 
     return scaledVector, output
 
