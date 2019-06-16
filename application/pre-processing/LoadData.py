@@ -37,7 +37,8 @@ def getScaledValues(row):
 
     vector[0][7] = (float(row[prodCat1N]) - 5.3) / 3.75
 
-    return vector, row[purchN]
+    purhaseVal = (row[purchN] - 9330)/4980
+    return vector, purhaseVal
 
 
 def dataPreProcessing():
@@ -51,8 +52,8 @@ def dataPreProcessing():
             dictData = dict(row)
 
             # populating productID map
-            if dictData["Product_ID"] not in productIdMap.keys():
-                newID = dictData["Product_ID"]
+            if dictData[prodIdN] not in productIdMap.keys():
+                newID = dictData[prodIdN]
                 productIdMap[newID] = lastID
                 lastID += 1
 
@@ -68,7 +69,7 @@ def dataPreProcessing():
 
 if __name__ == '__main__':
     scaledVector, output = dataPreProcessing()
-    scaledVector.dump("../../application/data/train2.npy")
-    output.dump("../../application/data/trainOutput2.npy")
-    scaledVector2 = np.load("../../application/data/train2.npy", allow_pickle=True)
+    scaledVector.dump("../../application/data/train.npy")
+    output.dump("../../application/data/trainOutput.npy")
+    scaledVector2 = np.load("../../application/data/train.npy", allow_pickle=True)
     print(scaledVector2.shape)
