@@ -37,11 +37,11 @@ def getScaledValues(row):
 
     vector[0][7] = (float(row[prodCat1N]) - 5.3) / 3.75
 
-    purhaseVal = (row[purchN] - 9330)/4980
+    purhaseVal = (float(row[purchN]) - 9330) / 4980
     return vector, purhaseVal
 
 
-def dataPreProcessing():
+def preprocessTrainData():
     scaledVector = np.zeros((0, 8))
     output = np.zeros(0)
     with open("../../application/data/train.csv", "rt") as f:
@@ -67,9 +67,45 @@ def dataPreProcessing():
     return scaledVector, output
 
 
+def preprocessAllData():
+    scaledTrainVector = np.zeros((0, 8))
+    scaledTestVector = np.zeros((0, 8))
+    trainOutput = np.zeros(0)
+    testOutput = np.zeros(0)
+    with open("../../application/data/train.csv", "rt") as f:
+        data = csv.DictReader(f)
+        lastID = 1
+        i = 0
+        for row in data:
+            dictData = dict(row)
+
+            # populating productID map
+            if dictData[prodIdN] not in productIdMap.keys():
+                newID = dictData[prodIdN]
+                productIdMap[newID] = lastID
+                lastID += 1
+
+            vect, y = getScaledValues(dictData)
+            if i % 10 == 0:
+                scaledTestVector = np.append(scaledTestVector, vect, axis=0)
+                testOutput = np.append(testOutput, y)
+            else:
+                scaledTrainVector = np.append(scaledTrainVector, vect, axis=0)
+                trainOutput = np.append(trainOutput, y)
+            i += 1
+            if i % 1000 == 0:
+                sys.stdout.write('\r' + "Progress {:2.1%}".format(i / 550068))
+
+    return scaledTrainVector, trainOutput, scaledTestVector, testOutput
+
+
 if __name__ == '__main__':
-    scaledVector, output = dataPreProcessing()
-    scaledVector.dump("../../application/data/train.npy")
-    output.dump("../../application/data/trainOutput.npy")
-    scaledVector2 = np.load("../../application/data/train.npy", allow_pickle=True)
+    scaledTrainVector, trainOutput, scaledTestVector, testOutput = preprocessAllData()
+    scaledTrainVector.dump("../../application/data/scaled_own_train_22_jun.npy")
+    scaledTestVector.dump("../../application/data/scaled_own_test_22_jun.npy")
+    trainOutput.dump("../../application/data/output_own_train_22_jun.npy")
+    testOutput.dump("../../application/data/output_own_test_22_jun.npy")
+    scaledVector2 = np.load("../../application/data/scaled_own_train_22_jun.npy", allow_pickle=True)
+    scaledVector3 = np.load("../../application/data/scaled_own_test_22_jun.npy", allow_pickle=True)
     print(scaledVector2.shape)
+    print(scaledVector3.shape)
