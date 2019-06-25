@@ -40,11 +40,12 @@ def test(coeffs):
         inputArr = testData[i]
         outputExp = outputData[i]
         output = np.dot(inputArr, np.transpose(coeffs[:8])) + coeffs[8]
-        if abs(outputExp - output) * 100 / outputExp < 10:
+        if (abs(outputExp - output) * 100 / outputExp) < 1:
             success += 1
     print("success rate", success*100/len(testData), "success count: ",success)
 
-coeffs = train()
-print(coeffs)
-coeffs.dump("coeffs.npy")
+# coeffs = train()
+# print(coeffs)
+# coeffs.dump("coeffs.npy")
+coeffs = np.load("coeffs.npy",allow_pickle=True)
 test(coeffs)

@@ -7,6 +7,15 @@ class Layer:
         self.name = name
         self.count = hocon.get_int("count")
         self.skipList = hocon.get_list("skip-list")
+        self.addBias = hocon.get_bool("add-bias", default=False)
+
+    def getSizeAsInput(self):
+        if self.addBias:
+            return self.count + 1
+        return self.count
+
+    def getSizeAsOutput(self):
+        return self.count
 
 
 class NNLoader:
@@ -21,6 +30,12 @@ class NNLoader:
         # load input feature details
         self.noOfFeaures = conf.get_int("input.no-of-features")
         print("number of features:", self.noOfFeaures)
+
+        if conf.get_bool("input.add-bias"):
+            self.noOfFeaures += 1
+            ones = np.ones(len(self.trainData))
+            self.trainData = np.column_stack((self.trainData, ones))
+        print("after adding bias train data size: ", self.trainData.shape)
 
         print("Training data size:", len(self.trainData))
         if (len(self.trainData[0]) != self.noOfFeaures):
@@ -42,6 +57,9 @@ class NNLoader:
 
         # load Test details
         self.testData = np.load("../../" + conf.get_string("test.input.file"), allow_pickle=True)
+        if conf.get_bool("input.add-bias"):
+            ones = np.ones(len(self.testData))
+            self.testData = np.column_stack((self.testData, ones))
         self.testOutput = np.load("../../" + conf.get_string("test.output.file"), allow_pickle=True)
         self.epsilon = conf.get_float("test.epsilonPerc")
 
