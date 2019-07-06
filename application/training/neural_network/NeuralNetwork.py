@@ -104,11 +104,12 @@ def test():
             outputVal = np.dot(coefficientMatrix3, hidden2Val)
 
         outputVal = outputVal*4980+9330
-
         total += 1
         err = ((outputVal - outputExp) * 100 / outputExp)
         if abs(err) < loader.epsilon:
             success += 1
+            print("exp:", outputExp, "pred:", outputVal)
+
         if i % 100 == 0:
             sys.stdout.write("Progress {:2.1%}".format(i / 55007) + '\r')
     print("success % :", (success * 100) / total)

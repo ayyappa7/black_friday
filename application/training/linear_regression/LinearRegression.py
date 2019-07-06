@@ -41,6 +41,7 @@ def test(coeffs):
         outputExp = outputData[i]
         output = np.dot(inputArr, np.transpose(coeffs[:8])) + coeffs[8]
         if (abs(outputExp - output) * 100 / outputExp) < 1:
+            print("exp:", outputExp*4980+9330,"pred:",output*4980+9330)
             success += 1
     print("success rate", success*100/len(testData), "success count: ",success)
 
