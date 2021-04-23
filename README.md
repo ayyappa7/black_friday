@@ -1,2 +1,2 @@
 # black_friday
-Black Friday prediction using NN
+Black Friday prediction using Nueral networks
